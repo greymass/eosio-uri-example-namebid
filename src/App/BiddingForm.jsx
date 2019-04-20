@@ -10,10 +10,12 @@ class BiddingForm extends Component {
   state = {
     biddingAmount: '',
     biddingName: '',
+    biddingNameAvailable: false,
+    minimumBid: null,
     errors: {}
   };
   stateChange = (state) => {
-    this.setState({ ...this.state, ...state })
+      this.setState({ ...this.state, ...state })
   };
   setError = (name, error) => {
     const errors = this.state.errors
@@ -24,16 +26,16 @@ class BiddingForm extends Component {
   lookupAccountName = () => {
     const { biddingName } = this.state;
 
-    lookupAccountName(biddingName, (currentBiddingName, accountNameAvailable, highestBid) => {
+    lookupAccountName(biddingName, (currentBiddingName, biddingNameAvailable, highestBid) => {
       if (biddingName !== currentBiddingName) {
         return;
       }
       this.setState(
         {
-          accountNameAvailable,
+          biddingNameAvailable,
           minimumBid: (highestBid * 1.1),
           errors: { biddingName: (
-            !accountNameAvailable &&
+            !biddingNameAvailable &&
               !this.state.errors.biddingName &&
               'This account name is not available.'
           )}
@@ -46,13 +48,19 @@ class BiddingForm extends Component {
 
     this.setState({ generatingURI: true });
     const eosioURI = await generateURI(biddingAmount, biddingName);
-    
+
     this.props.onStateChange({ eosioURI });
     this.setState({ generatingURI: false });
   };
   render() {
-    const { biddingAmount, biddingName, errors, generatingURI } = this.state;
+    const { biddingAmount, biddingName, biddingNameAvailable, errors, generatingURI, minimumBid } = this.state;
+    if (Number(biddingAmount) > minimumBid && !errors.biddingAmount ) {
+      errors.biddingAmount = 'The minimum bid amount has not been met.'
+    }
+
     const hasErrors = !!Object.values(errors).some(value => value !== undefined );
+
+
     return (
       <Form
         error={hasErrors}
@@ -66,11 +74,17 @@ class BiddingForm extends Component {
             this.lookupAccountName(state.bid)
           }}
         />
-        {biddingName !== '' && (
-          <BiddingAmountField
-            setError={this.setError}
-            onStateChange={this.stateChange}
-          />
+        {biddingName !== '' && biddingNameAvailable && (
+          <React.Fragment>
+            <BiddingAmountField
+              setError={this.setError}
+              onStateChange={this.stateChange}
+            />
+            <Message
+              success
+              content={`This account name is available and the minimum bid is ${minimumBid} EOS`}
+            />
+          </React.Fragment>
         )}
         {Object.keys(errors).map(key => (
           <Message
