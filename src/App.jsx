@@ -29,8 +29,8 @@ class App extends Component {
               success
               style={{ marginBottom: 100 }}
               content="
-                This is an EOSIO uri example project created by Greymass to allow any website owner to generate
-                a donation link and/or button. To start using this tool simply fill up the form below.
+                This is an EOSIO uri example project created by Greymass to allow anyone to quickly bid on an account
+                name. To start using this tool simply fill up the form below.
               "
             />
             <BiddingForm onStateChange={this.onStateChange} />

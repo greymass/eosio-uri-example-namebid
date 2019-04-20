@@ -2,26 +2,27 @@ import React, { Component } from 'react';
 
 import { Form } from 'semantic-ui-react';
 
-const decimalRegex = /^(\d*\.)?\d+$/;
+const addressRegex = /^[a-z12345.]{1,12}$/;
 
 class BiddingNameField extends Component {
   onChange = (e) => {
-    const donationAmount = e.target.value;
-    this.props.setError('donationAmount', undefined);
-    if (decimalRegex.test(donationAmount)) {
-      this.props.onStateChange({ donationAmount })
+    const biddingName = e.target.value;
+    this.props.setError('biddingName', undefined);
+
+    if (addressRegex.test(biddingName)) {
+      this.props.onStateChange({ biddingName })
     } else {
       this.props.setError(
-        'donationAmount',
-        'The donation amount is invalid, it must be a decimal number with up to 4 decimals, eg: "1.0000".'
-      )
+        'biddingName',
+        'The bidding name is invalid, it must be a string of 1-12 characters.'
+      );
     }
   };
   render() {
     return (
       <React.Fragment>
         <Form.Input
-          label="Enter a Donation Amount (in EOS)"
+          label="Enter the account name that you wish to bid on"
           onChange={this.onChange}
         />
       </React.Fragment>
