@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Form, Message } from 'semantic-ui-react';
 
-import BiddingNameField from './DonationForm/BiddingNameField';
-import BiddingAmountField from './DonationForm/BiddingAmountField';
+import BiddingNameField from './BiddingForm/BiddingNameField';
+import BiddingAmountField from './BiddingForm/BiddingAmountField';
 import generateURI from '../functions/generateURI';
 
 class BiddingForm extends Component {
