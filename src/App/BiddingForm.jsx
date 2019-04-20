@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Form, Message } from 'semantic-ui-react';
 
-import DonationAmountField from './DonationForm/DonationAmountField';
-import DonationRecipientField from './DonationForm/DonationRecipientField';
+import BiddingNameField from './DonationForm/BiddingNameField';
+import BiddingAmountField from './DonationForm/BiddingAmountField';
 import generateURI from '../functions/generateURI';
 
-class DonationForm extends Component {
+class BiddingForm extends Component {
   state = {
     donationAmount: '',
     donationRecipient: '',
@@ -37,12 +37,12 @@ class DonationForm extends Component {
         onSubmit={this.onSubmit}
         style={{ marginTop: 300, width: 300, margin: 'auto' }}
       >
-        <DonationAmountField
+        <BiddingNameField
           setError={this.setError}
           onStateChange={this.stateChange}
         />
         {donationAmount !== '' && (
-          <DonationRecipientField
+          <BiddingAmountField
             setError={this.setError}
             onStateChange={this.stateChange}
           />
@@ -62,11 +62,11 @@ class DonationForm extends Component {
           />
         )}
         {generatingURI && (
-          <h2>Generating URI...</h2>
+          <h2>Building Bid Transaction...</h2>
         )}
       </Form>
     );
   }
 }
 
-export default DonationForm;
+export default BiddingForm;

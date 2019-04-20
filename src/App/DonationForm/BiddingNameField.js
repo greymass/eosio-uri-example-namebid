@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 
 const decimalRegex = /^(\d*\.)?\d+$/;
 
-class DonationAmountField extends Component {
+class BiddingNameField extends Component {
   onChange = (e) => {
     const donationAmount = e.target.value;
     this.props.setError('donationAmount', undefined);
@@ -29,4 +29,4 @@ class DonationAmountField extends Component {
   }
 }
 
-export default DonationAmountField;
+export default BiddingNameField;
