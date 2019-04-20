@@ -31,7 +31,7 @@ const opts = {
   }
 };
 
-export default async function gernerateURI(donationAmount, donationRecipient) {
+export default async function generateURI(biddingAmount, biddingName) {
   let req = await SigningRequest.create({
     callback: 'https://dapp.greymass.com',
     actions: [{
@@ -39,10 +39,9 @@ export default async function gernerateURI(donationAmount, donationRecipient) {
       name: 'transfer',
       authorization: [{ actor: '1111111111', permission: 'active' }],
       data: {
-        from: '11111111111',
-        to: donationRecipient,
-        quantity: donationAmount,
-        memo: 'donation',
+        owner: '11111111111',
+        quantity: biddingAmount,
+        newname: biddingName
       }
     }]
   }, opts);

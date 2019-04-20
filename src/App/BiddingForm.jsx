@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Button, Form, Message } from 'semantic-ui-react';
 
-import BiddingNameField from './BiddingForm/BiddingNameField';
 import BiddingAmountField from './BiddingForm/BiddingAmountField';
+import BiddingNameField from './BiddingForm/BiddingNameField';
 import generateURI from '../functions/generateURI';
+import lookupAccountName from '../functions/lookupAccountName';
 
 class BiddingForm extends Component {
   state = {
-    donationAmount: '',
-    donationRecipient: '',
+    biddingAmount: '',
+    biddingName: '',
     errors: {}
   };
   stateChange = (state) => {
@@ -20,17 +21,38 @@ class BiddingForm extends Component {
 
     this.setState({ errors })
   };
+  lookupAccountName = () => {
+    const { biddingName } = this.state;
+
+    lookupAccountName(biddingName, (currentBiddingName, accountNameAvailable, highestBid) => {
+      if (biddingName !== currentBiddingName) {
+        return;
+      }
+      this.setState(
+        {
+          accountNameAvailable,
+          minimumBid: (highestBid * 1.1),
+          errors: { biddingName: (
+            !accountNameAvailable &&
+              !this.state.errors.biddingName &&
+              'This account name is not available.'
+          )}
+        }
+      );
+    })
+  };
   onSubmit = async () => {
-    const { donationAmount, donationRecipient } = this.state;
+    const { biddingAmount, biddingName } = this.state;
 
     this.setState({ generatingURI: true });
-    const eosioURI = await generateURI(donationAmount, donationRecipient);
-    this.props.onStateChange({ donationAmount, eosioURI });
+    const eosioURI = await generateURI(biddingAmount, biddingName);
+    
+    this.props.onStateChange({ eosioURI });
     this.setState({ generatingURI: false });
   };
   render() {
-    const { donationAmount, errors, generatingURI, donationRecipient } = this.state;
-    const hasErrors = !!Object.values(errors).some(value => ![undefined, null].includes(value) );
+    const { biddingAmount, biddingName, errors, generatingURI } = this.state;
+    const hasErrors = !!Object.values(errors).some(value => value !== undefined );
     return (
       <Form
         error={hasErrors}
@@ -39,9 +61,12 @@ class BiddingForm extends Component {
       >
         <BiddingNameField
           setError={this.setError}
-          onStateChange={this.stateChange}
+          onStateChange={(state) => {
+            this.stateChange(state);
+            this.lookupAccountName(state.bid)
+          }}
         />
-        {donationAmount !== '' && (
+        {biddingName !== '' && (
           <BiddingAmountField
             setError={this.setError}
             onStateChange={this.stateChange}
@@ -54,7 +79,7 @@ class BiddingForm extends Component {
             key={key}
           />
         ))}
-        {donationRecipient !== '' && (
+        {biddingAmount !== '' && (
           <Button
             color="blue"
             content="Generate URI"
