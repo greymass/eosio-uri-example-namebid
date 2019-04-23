@@ -7,7 +7,7 @@ const decimalRegex = /^(\d*\.)?\d+$/;
 class BiddingAmountField extends Component {
   onChange = (e) => {
     const biddingAmount = e.target.value;
-    this.props.setError('donationAmount', undefined);
+    this.props.setError('biddingAmount', undefined);
 
     if (decimalRegex.test(biddingAmount)) {
       this.props.onStateChange({ biddingAmount })

@@ -35,12 +35,12 @@ export default async function generateURI(biddingAmount, biddingName) {
   let req = await SigningRequest.create({
     callback: 'https://dapp.greymass.com',
     actions: [{
-      account: 'eosio.token',
-      name: 'transfer',
-      authorization: [{ actor: '1111111111', permission: 'active' }],
+      account: 'eosio',
+      name: 'bidname',
+      authorization: [{ actor: '...........1', permission: 'active' }],
       data: {
-        owner: '11111111111',
-        quantity: biddingAmount,
+        bidder: '...........1',
+        bid: biddingAmount,
         newname: biddingName
       }
     }]
