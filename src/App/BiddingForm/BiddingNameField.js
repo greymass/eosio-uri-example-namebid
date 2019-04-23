@@ -10,6 +10,7 @@ class BiddingNameField extends Component {
     this.props.setError('biddingName', undefined);
 
     if (addressRegex.test(biddingName)) {
+      console.log({biddingName})
       this.props.onStateChange({ biddingName })
     } else {
       this.props.setError(

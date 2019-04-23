@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {Button, Segment} from 'semantic-ui-react';
 
 class URIPreviewer extends Component {
-  state = {};
-
   render() {
     const { eosioURI } = this.props;
 
@@ -21,7 +19,7 @@ class URIPreviewer extends Component {
           target="_blank"
         >
           <Button
-            content="Make Bid"
+            content="Go to Wallet"
           />
         </a>
       </Segment>

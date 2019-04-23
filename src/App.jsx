@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Segment, Message } from 'semantic-ui-react';
+import { Grid, Segment, Message, Header } from 'semantic-ui-react';
 
 import BiddingForm from './App/BiddingForm';
 import URIButton from './App/URIButton';
@@ -11,7 +11,7 @@ class App extends Component {
     this.setState({ ...this.state, ...state });
   };
   render() {
-    const { donationAmount, eosioURI, generatingButton } = this.state;
+    const { eosioURI } = this.state;
 
     const segmentStyle = {
       margin: 'auto',
@@ -35,7 +35,11 @@ class App extends Component {
             />
             <BiddingForm onStateChange={this.onStateChange} />
             {eosioURI && (
-              <URIButton key='uri_previewer' eosioURI={eosioURI} />
+              <Segment style={{ padding: 30, marginTop: 20 }}>
+                <Header>Your bid transaction is ready</Header>
+                <p>Click the following button to be taken to your EOS URI enabled wallet.</p>
+                <URIButton key='uri_previewer' eosioURI={eosioURI} />
+              </Segment>
             )}
           </Segment>
           <div style={{ margin:'auto', width: 200} }>

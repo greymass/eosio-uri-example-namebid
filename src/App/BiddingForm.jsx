@@ -14,8 +14,10 @@ class BiddingForm extends Component {
     minimumBid: null,
     errors: {}
   };
-  stateChange = (state) => {
-      this.setState({ ...this.state, ...state })
+  stateChange = (state, callback) => {
+    this.setState({ ...this.state, ...state }, () => {
+      callback && callback();
+    });
   };
   setError = (name, error) => {
     const errors = this.state.errors
@@ -26,25 +28,30 @@ class BiddingForm extends Component {
   lookupAccountName = () => {
     const { biddingName } = this.state;
 
-    lookupAccountName(biddingName, (currentBiddingName, biddingNameAvailable, highestBid) => {
-      if (biddingName !== currentBiddingName) {
+    lookupAccountName(biddingName, (lookedUpBiddingName, biddingNameAvailable, highestBid) => {
+      const { biddingName: currentBiddingName } = this.state;
+
+      if (lookedUpBiddingName !== currentBiddingName) {
         return;
       }
-      this.setState(
-        {
-          biddingNameAvailable,
-          minimumBid: (highestBid * 1.1),
-          errors: { biddingName: (
-            !biddingNameAvailable &&
-              !this.state.errors.biddingName &&
-              'This account name is not available.'
-          )}
-        }
-      );
+
+      const newState = {
+        infoOnBiddingName: lookedUpBiddingName,
+        biddingNameAvailable,
+        minimumBid: (highestBid || 0) * 1.1
+      };
+      if (!biddingNameAvailable && !this.state.errors.biddingName) {
+        newState.errors.biddingAmount = 'This account name is not available.'
+      }
+      this.setState(newState);
     })
   };
   onSubmit = async () => {
     const { biddingAmount, biddingName } = this.state;
+
+    if (!biddingAmount) {
+      return;
+    }
 
     this.setState({ generatingURI: true });
     const eosioURI = await generateURI(biddingAmount, biddingName);
@@ -53,25 +60,36 @@ class BiddingForm extends Component {
     this.setState({ generatingURI: false });
   };
   render() {
-    const { biddingAmount, biddingName, biddingNameAvailable, errors, generatingURI, minimumBid } = this.state;
-    if (Number(biddingAmount) > minimumBid && !errors.biddingAmount ) {
+    const {
+      biddingAmount,
+      biddingName,
+      biddingNameAvailable,
+      errors,
+      generatingURI,
+      infoOnBiddingName,
+      minimumBid
+    } = this.state;
+
+    if (parseFloat(biddingAmount) < minimumBid && !errors.biddingAmount ) {
       errors.biddingAmount = 'The minimum bid amount has not been met.'
     }
 
     const hasErrors = !!Object.values(errors).some(value => value !== undefined );
-
+    const hasSuccess = infoOnBiddingName === biddingName && biddingNameAvailable;
 
     return (
       <Form
         error={hasErrors}
+        success={hasSuccess}
         onSubmit={this.onSubmit}
         style={{ marginTop: 300, width: 300, margin: 'auto' }}
       >
         <BiddingNameField
           setError={this.setError}
           onStateChange={(state) => {
-            this.stateChange(state);
-            this.lookupAccountName(state.bid)
+            this.stateChange(state, () => {
+              this.lookupAccountName()
+            });
           }}
         />
         {biddingName !== '' && biddingNameAvailable && (
@@ -82,7 +100,7 @@ class BiddingForm extends Component {
             />
             <Message
               success
-              content={`This account name is available and the minimum bid is ${minimumBid} EOS`}
+              content={`This account name is available and the minimum bid is ${minimumBid.toFixed(4)} EOS`}
             />
           </React.Fragment>
         )}
@@ -96,7 +114,7 @@ class BiddingForm extends Component {
         {biddingAmount !== '' && (
           <Button
             color="blue"
-            content="Generate URI"
+            content="Generate Transaction"
             disabled={hasErrors}
           />
         )}
