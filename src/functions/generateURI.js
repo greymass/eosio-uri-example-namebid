@@ -40,7 +40,7 @@ export default async function generateURI(biddingAmount, biddingName) {
       authorization: [{ actor: '...........1', permission: 'active' }],
       data: {
         bidder: '...........1',
-        bid: biddingAmount,
+        bid: `${parseFloat(biddingAmount).toFixed(4)} EOS`,
         newname: biddingName
       }
     }]
