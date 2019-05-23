@@ -33,14 +33,13 @@ const opts = {
 
 export default async function generateURI(biddingAmount, biddingName) {
   let req = await SigningRequest.create({
-    callback: 'https://dapp.greymass.com',
     actions: [{
       account: 'eosio',
       name: 'bidname',
-      authorization: [{ actor: '...........1', permission: 'active' }],
+      authorization: [{ actor: '............1', permission: '............1' }],
       data: {
-        bidder: '...........1',
-        bid: biddingAmount,
+        bidder: '............1',
+        bid: `${parseFloat(biddingAmount).toFixed(4)} EOS`,
         newname: biddingName
       }
     }]
