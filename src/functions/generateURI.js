@@ -37,9 +37,9 @@ export default async function generateURI(biddingAmount, biddingName) {
     actions: [{
       account: 'eosio',
       name: 'bidname',
-      authorization: [{ actor: '...........1', permission: 'active' }],
+      authorization: [{ actor: '............1', permission: '............1' }],
       data: {
-        bidder: '...........1',
+        bidder: '............1',
         bid: biddingAmount,
         newname: biddingName
       }
